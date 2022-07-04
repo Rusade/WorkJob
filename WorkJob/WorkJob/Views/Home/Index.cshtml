@@ -2,7 +2,102 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .form-group {
+        display: flex;
+        padding: 5px;
+    }
+
+    .form-label {
+        text-align: right;
+    }
+</style>
+<div class="form-group">
+    <div class="col-6">
+        <label class="form-label col-3" for="startDate">开始月份：</label>
+        <input class="form-control" style="width:220px" type="text" id="startDate" date-type="monthpicker" />
+    </div>
+    <div class="col-6">
+        <label class="form-label col-3" for="endDate">结束月份：</label>
+        <input class="form-control" style="width:220px" type="text" id="endDate" date-type="monthpicker" />
+    </div>
 </div>
+<div class="form-group">
+    <div class="col-6">
+        <label class="form-label col-3" for="companys">公司：</label>
+        <select id="companys" class="selectpicker" multiple>
+        </select>
+    </div>
+</div>
+<div style="width:100%; text-align:center;">
+    <a class="btn btn-primary" id="searchBtn">查询</a>
+</div>
+
+<div id="chart" style="width: 100%;height:700px;"></div>
+
+@section Scripts{
+    <script>
+        $.ajax({
+            url: "Index/Companys",
+            method: "Get",
+            success: function (dataList) {
+                var str = '';
+                for (var i = 0; i < dataList.length; i++) {
+                    str += '<option value=' + i + '>' + dataList[i] + '</option>';
+                }
+                $('#companys').html(str);
+                $('#companys').selectpicker('refresh');
+            }
+        });
+
+        $("#searchBtn").click(function () {
+            var startMonth = $("#startDate").val();
+            var endMonth = $("#endDate").val();
+            var companys = $("#companys").val();
+            if (!startMonth) {
+                alert("请选择开始月份");
+                return false;
+            }
+            if (!endMonth) {
+                alert("请选择结束月份");
+                return false;
+            }
+            if (startMonth > endMonth) {
+                alert("开始月份必须小于等于结束月份");
+                return false;
+            }
+
+            $.ajax({
+                url: "Index/Calculate?startDate=" + startMonth + "&endDate=" + endMonth + "&companys=" + companys,
+                method: "Post",
+                success: function (response) {
+                    if (!response.isSuccess) {
+                        alert(response.message);
+                        return false;
+                    }
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('chart'));
+                    // 指定图表的配置项和数据
+                    var option = {
+                        title: {
+                            text: '相对收益'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data: $.map(response.data.relativeGains, function (item) { return item.name; })
+                        },
+                        xAxis: {
+                            data: response.data.date
+                        },
+                        yAxis: {},
+                        series: response.data.relativeGains
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                }
+            });
+        });
+
+    </script>
+}

@@ -7,3 +7,5 @@
 /WorkJob/Provider/obj
 /WorkJob/WorkJob/bin
 /WorkJob/WorkJob/obj
+/WorkJob/Provider/bin
+/WorkJob/WorkJob/WorkJob.csproj.user

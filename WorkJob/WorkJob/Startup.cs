@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Provider.Constants;
+using Provider.Helpers;
+using Provider.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +26,8 @@ namespace WorkJob
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ExcelHelper.Init();
+            services.AddScoped<IndexService>();
             services.AddControllersWithViews();
         }
 

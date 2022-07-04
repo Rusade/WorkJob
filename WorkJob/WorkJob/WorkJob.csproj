@@ -4,4 +4,18 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Bootstrap.Datepicker" Version="1.8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Provider\Provider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Excels\Data.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
