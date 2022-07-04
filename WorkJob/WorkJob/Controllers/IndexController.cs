@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Provider.Constants;
+using Provider.Helpers;
 using Provider.Services;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,13 @@ namespace WorkJob.Controllers
         {
             var data = IndexService.Calculate(startDate, endDate, companys);
             return Ok(data);
+        }
+
+        [HttpPost("ReloadData")]
+        public IActionResult ReloadData()
+        {
+            ExcelHelper.Init();
+            return Ok();
         }
     }
 }
